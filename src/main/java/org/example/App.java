@@ -1,10 +1,5 @@
 package org.example;
-
-/**
- * Hello world!
- *
- */
-
+import org.h2.tools.Server;
 
 import  org.example.model.Article;
 
@@ -12,11 +7,20 @@ import  org.example.model.Article;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        try {
+            Server.createWebServer("-web", "-webPort", "8082").start();
+            System.out.println("Console H2 disponible sur : http://localhost:8082");
+        } catch (Exception e) {
+            System.out.println("Erreur lors du demarrage de la console H2");
+            e.printStackTrace();
+        }
+
         // Création de l'EntityManagerFactory
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hibernate-demo");
 
@@ -25,6 +29,10 @@ public class App {
 
         // Lecture des Articles
         lireArticles(emf);
+
+        System.out.println("\nOuvrez http://localhost:8082 pour consulter la base H2.");
+        System.out.println("Appuyez sur Entree pour fermer l'application...");
+        System.in.read();
 
         // Fermeture de l'EntityManagerFactory
         emf.close();
@@ -81,4 +89,5 @@ public class App {
             em.close();
         }
     }
+
 }
